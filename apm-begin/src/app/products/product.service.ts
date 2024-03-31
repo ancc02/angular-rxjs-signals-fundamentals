@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, tap } from 'rxjs';
+import { Product } from './product';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +12,8 @@ export class ProductService {
   
   private http = inject(HttpClient);
 
-  getProducts(): Observable<Prooduct[]>{
-    return 
-    this.http.get<Product[]>(this.productsUrl)
+  getProducts(): Observable<Product[]>{
+    return this.http.get<Product[]>(this.productsUrl)
     .pipe(
       tap(() => console.log('In http.get pipeline'))
     );
