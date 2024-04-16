@@ -4,20 +4,19 @@ import { NgIf, NgFor, NgClass } from '@angular/common';
 import { Product } from '../product';
 import { ProductDetailComponent } from '../product-detail/product-detail.component';
 import { ProductService } from '../product.service';
-import {Subscription, tap} from 'rxjs'
+import { EMPTY, Subscription, catchError, tap } from 'rxjs';
 
 @Component({
-    selector: 'pm-product-list',
-    templateUrl: './product-list.component.html',
-    standalone: true,
-  imports: [NgIf, NgFor, NgClass, ProductDetailComponent]
+  selector: 'pm-product-list',
+  templateUrl: './product-list.component.html',
+  standalone: true,
+  imports: [NgIf, NgFor, NgClass, ProductDetailComponent],
 })
-
 export class ProductListComponent implements OnInit, OnDestroy {
   private productService = inject(ProductService);
   pageTitle = 'Products';
   errorMessage = '';
-  sub !: Subscription;
+  sub!: Subscription;
 
   // Products
   products: Product[] = [];
@@ -25,13 +24,20 @@ export class ProductListComponent implements OnInit, OnDestroy {
   // Selected product id to highlight the entry
   selectedProductId: number = 0;
 
-  ngOnInit(): void{
-    this.sub = this.productService.getProducts()
-    .pipe(tap(() => console.log("In component pipelin")))
-    .subscribe(products => this.products = products );
+  ngOnInit(): void {
+    this.sub = this.productService
+      .getProducts()
+      .pipe(
+        tap(() => console.log('In component pipeline')),
+        catchError((err) => {
+          this.errorMessage = err;
+          return EMPTY;
+        })
+      )
+      .subscribe((products) => (this.products = products));
   }
 
-  ngOnDestroy(): void{
+  ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
 
