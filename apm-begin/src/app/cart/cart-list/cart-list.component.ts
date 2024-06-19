@@ -15,5 +15,5 @@ export class CartListComponent {
 
   private cartService = inject(CartService);
 
-  cartItems: CartItem[] = this.cartService.cartItems();
+  cartItems = this.cartService.cartItems;
 }
